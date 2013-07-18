@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="author" content="Igal Steklov, igalst@gmail.com">
+		<style type="text/css">
+			body {
+				font-size: 0;
+			}
+
+			#bigImage {
+				-moz-transform-origin: left top;
+				-webkit-transform-origin: left top;
+				transform-origin: left top;
+			}
+
+			.row {
+				white-space: nowrap;
+			}
+
+			#zoom {
+				position: fixed;
+				top: 163px;
+				left: -110px;
+				width: 300px;
+				z-index: 1;
+				-moz-transform: rotate(90deg);
+				-webkit-transform: rotate(90deg);
+				transform: rotate(90deg);
+			}
+		</style>
+	</head>
+	<body>
+
+		<input id="zoom" type="range" min="50" max="2000" value="50">
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script>
+			var draw = function() {
+				var i, j, row, filename;
+
+				var SIZE = {
+					x: 45,
+					y: 59
+				};
+
+				var bigImage = $("<div id='bigImage'>");
+
+				for (i = 0; i < SIZE.x; i++) {
+					row = $("<div class='row'>");
+					for (j = 0; j < SIZE.y; j++) {
+						filename = minNumLen(j) + "-" + minNumLen(i) + ".jpg";
+						$("<img src='" + filename + "' title=''>").appendTo(row);
+					}
+					bigImage.append(row);
+				}
+
+				$("body").append(bigImage);
+			};
+
+			var minNumLen = function(num) {
+				var MAX = 4;
+
+				var padding = "";
+				for (var i = 0; i < MAX - (num + "").length; i++) {
+					padding += "0";
+				}
+
+				return padding + num;
+			};
+
+			var zoom = function() {
+				$("#zoom").on("mouseup keyup", function() {
+					var zoomValue = parseInt($(this).val()) / 1000;
+					$("#bigImage").css("transform", "scale(" + zoomValue + ")");
+				}).trigger("mouseup");
+			}
+
+			$(function() {
+				draw();
+				zoom();
+			});
+		</script>
+	</body>
+</html>
